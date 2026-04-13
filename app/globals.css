@@ -1,0 +1,463 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+
+  /* Light theme */
+  --bg-primary: #f8f6f1;
+  --bg-secondary: #edeae0;
+  --bg-card: #ffffff;
+  --bg-card-hover: #faf9f5;
+  --text-primary: #1a1612;
+  --text-secondary: #4a3f32;
+  --text-muted: #7d6f5c;
+  --border: rgba(139, 115, 85, 0.18);
+  --border-hover: rgba(139, 115, 85, 0.4);
+  --accent: #8b5e3c;
+  --accent-soft: #c4956a;
+  --accent-glow: rgba(139, 94, 60, 0.15);
+  --gold: #b8860b;
+  --gold-light: #d4a843;
+  --shadow-sm: 0 1px 3px rgba(26,22,18,0.06), 0 1px 2px rgba(26,22,18,0.04);
+  --shadow-md: 0 4px 16px rgba(26,22,18,0.08), 0 2px 6px rgba(26,22,18,0.05);
+  --shadow-lg: 0 12px 40px rgba(26,22,18,0.1), 0 4px 12px rgba(26,22,18,0.06);
+  --shadow-xl: 0 24px 60px rgba(26,22,18,0.14), 0 8px 20px rgba(26,22,18,0.08);
+}
+
+.dark {
+  --bg-primary: #0e0c0a;
+  --bg-secondary: #161310;
+  --bg-card: #1c1814;
+  --bg-card-hover: #221e19;
+  --text-primary: #f0ebe3;
+  --text-secondary: #c4b89e;
+  --text-muted: #7d6f5c;
+  --border: rgba(196, 158, 100, 0.12);
+  --border-hover: rgba(196, 158, 100, 0.3);
+  --accent: #c4956a;
+  --accent-soft: #d4a875;
+  --accent-glow: rgba(196, 149, 106, 0.12);
+  --gold: #d4a843;
+  --gold-light: #e8c46a;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.4), 0 2px 6px rgba(0,0,0,0.2);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.3);
+  --shadow-xl: 0 24px 60px rgba(0,0,0,0.6), 0 8px 20px rgba(0,0,0,0.4);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ─── Selection ─────────────────────────────────────────────────────────────── */
+::selection {
+  background: var(--accent-glow);
+  color: var(--accent);
+}
+
+/* ─── Focus ─────────────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ─── Typography helpers ────────────────────────────────────────────────────── */
+.font-display { font-family: var(--font-display); }
+.font-body    { font-family: var(--font-body); }
+.font-mono    { font-family: var(--font-mono); }
+
+/* ─── Text gradient ─────────────────────────────────────────────────────────── */
+.text-gradient {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--gold-light) 50%, var(--accent-soft) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animated shimmer on gradient text */
+.text-gradient-animated {
+  background: linear-gradient(
+    270deg,
+    var(--accent),
+    var(--gold-light),
+    var(--accent-soft),
+    var(--gold),
+    var(--accent)
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 5s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.text-gradient-cool {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Cards ─────────────────────────────────────────────────────────────────── */
+.card-premium {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  /* 3-D tilt handled by Framer — avoid conflicting transform here */
+}
+
+.card-premium:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ─── Glass ─────────────────────────────────────────────────────────────────── */
+.glass-subtle {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+}
+
+.dark .glass-subtle {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* ─── Noise texture ─────────────────────────────────────────────────────────── */
+.noise::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ─── Shimmer line ──────────────────────────────────────────────────────────── */
+.shimmer-line {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer-line::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+  animation: shimmer 3s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0%   { left: -100%; }
+  100% { left: 200%; }
+}
+
+/* ─── Section spacing ───────────────────────────────────────────────────────── */
+.section-padding { padding: 96px 0; }
+@media (max-width: 768px) { .section-padding { padding: 64px 0; } }
+
+/* ─── Reduced motion ────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   PROFILE PHOTO ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@keyframes spin-gold {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes float-photo {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+
+@keyframes pulse-ring {
+  0%   { opacity: 0.7; transform: scale(0.97); }
+  100% { opacity: 0; transform: scale(1.06); }
+}
+
+@keyframes photo-shine {
+  0%        { left: -100%; }
+  30%, 100% { left: 150%; }
+}
+
+@keyframes corner-blink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.55; transform: scale(1.5); }
+}
+
+/* ── Responsive wrapper ── */
+.profile-photo-wrapper {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  border-radius: 24px;
+}
+
+/* Fluid size overrides — applied alongside .profile-photo-wrapper */
+.profile-photo-responsive {
+  width: 220px;
+  height: 220px;
+}
+@media (min-width: 480px) {
+  .profile-photo-responsive {
+    width: 270px;
+    height: 270px;
+  }
+}
+@media (min-width: 1024px) {
+  .profile-photo-responsive {
+    width: 320px;
+    height: 320px;
+  }
+}
+
+/* ── Conic gold spinner ── */
+.profile-spinner-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 30px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    #c9a84c 60deg,
+    #f5d78e 120deg,
+    #c9a84c 180deg,
+    transparent 240deg,
+    #8a6a1f 300deg,
+    transparent 360deg
+  );
+  animation: spin-gold 3s linear infinite;
+  z-index: 1;
+}
+.profile-spinner-ring::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: 25px;
+  background: var(--bg-color, #0d1117);
+}
+
+/* ── Pulse rings ── */
+.profile-pulse-1 {
+  position: absolute;
+  inset: -14px;
+  border-radius: 38px;
+  border: 1.5px solid rgba(201, 168, 76, 0.35);
+  animation: pulse-ring 2.5s ease-out infinite;
+  z-index: 0;
+}
+.profile-pulse-2 {
+  position: absolute;
+  inset: -26px;
+  border-radius: 50px;
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  animation: pulse-ring 2.5s ease-out 0.8s infinite;
+  z-index: 0;
+}
+
+/* ── Photo frame ── */
+.profile-photo-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  z-index: 2;
+  animation: float-photo 5s ease-in-out infinite;
+}
+
+/* ── Shine sweep ── */
+.profile-photo-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.09) 50%,
+    transparent 70%
+  );
+  animation: photo-shine 6s ease-in-out 1.5s infinite;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* ── Corner dots ── */
+.profile-corner-dot {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  background: #c9a84c;
+  border-radius: 50%;
+  z-index: 5;
+  box-shadow: 0 0 6px 2px rgba(201, 168, 76, 0.6);
+}
+.profile-corner-dot.tl { top: -4px;    left: -4px;    animation: corner-blink 2s ease-in-out          infinite; }
+.profile-corner-dot.tr { top: -4px;    right: -4px;   animation: corner-blink 2s ease-in-out 0.5s     infinite; }
+.profile-corner-dot.bl { bottom: -4px; left: -4px;    animation: corner-blink 2s ease-in-out 1s       infinite; }
+.profile-corner-dot.br { bottom: -4px; right: -4px;   animation: corner-blink 2s ease-in-out 1.5s     infinite; }
+
+/* ─── CSS variable for spinner mask ─────────────────────────────────────────── */
+:root { --bg-color: #0b0f1a; }
+.profile-spinner-ring::after { background: var(--bg-color); }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   HERO BACKGROUND GRID DOTS
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.hero-grid-dots {
+  background-image: radial-gradient(circle, rgba(201,168,76,0.7) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   GLOBAL FLOATING ORB  (used by Hero.tsx FloatingOrb component)
+   — GPU-composited: only opacity + transform animated, never layout props
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@keyframes orb-drift {
+  0%, 100% { transform: translateY(0px)   translateX(0px)   scale(1); }
+  33%       { transform: translateY(-22px) translateX(12px)  scale(1.06); }
+  66%       { transform: translateY(-10px) translateX(-8px)  scale(0.97); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   GLOW BORDER PULSE  — add class "glow-border" to any card for ambient glow
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.glow-border {
+  position: relative;
+}
+.glow-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--accent), var(--gold-light), var(--accent));
+  background-size: 200% 200%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+  animation: gradient-shift 3s ease infinite;
+}
+.glow-border:hover::before {
+  opacity: 0.35;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   ANIMATED UNDERLINE  — add "underline-grow" to any <a> for a reveal effect
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.underline-grow {
+  position: relative;
+  display: inline-block;
+}
+.underline-grow::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+.underline-grow:hover::after { width: 100%; }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   BUTTON HOVER GLOW  — used via Tailwind group on CTA buttons
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.btn-glow {
+  position: relative;
+  overflow: hidden;
+}
+.btn-glow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 120%, var(--accent-glow) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.btn-glow:hover::after { opacity: 1; }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   CURSOR GLOW  (optional: toggle via JS by adding class to <body>)
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.cursor-glow-active * { cursor: none; }
+
+#cursor-dot {
+  position: fixed;
+  top: 0; left: 0;
+  width: 8px; height: 8px;
+  background: var(--gold-light);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: difference;
+  transition: transform 0.1s ease, width 0.2s ease, height 0.2s ease;
+}
+#cursor-ring {
+  position: fixed;
+  top: 0; left: 0;
+  width: 36px; height: 36px;
+  border: 1.5px solid var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: transform 0.12s ease, width 0.25s ease, height 0.25s ease, opacity 0.2s ease;
+  opacity: 0.6;
+}
