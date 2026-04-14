@@ -194,6 +194,11 @@ body {
 .section-padding { padding: 96px 0; }
 @media (max-width: 768px) { .section-padding { padding: 64px 0; } }
 
+/* ─── Safe-area inset (notched phones) ─────────────────────────────────────── */
+.pb-safe-area-inset-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 /* ─── Reduced motion ────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -242,8 +247,14 @@ body {
 
 /* Fluid size overrides — applied alongside .profile-photo-wrapper */
 .profile-photo-responsive {
-  width: 220px;
-  height: 220px;
+  width: 190px;
+  height: 190px;
+}
+@media (min-width: 380px) {
+  .profile-photo-responsive {
+    width: 220px;
+    height: 220px;
+  }
 }
 @media (min-width: 480px) {
   .profile-photo-responsive {

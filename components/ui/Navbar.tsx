@@ -6,15 +6,15 @@ import { Moon, Sun, Menu, X } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 
 const navLinks = [
-  { href: "#about", label: "About" },
-  { href: "#education", label: "Education" },
-  { href: "#skills", label: "Skills" },
-  { href: "#projects", label: "Projects" },
+  { href: "#about",      label: "About"      },
+  { href: "#education",  label: "Education"  },
+  { href: "#skills",     label: "Skills"     },
+  { href: "#projects",   label: "Projects"   },
   { href: "#experience", label: "Experience" },
-  { href: "#contact", label: "Contact" },
+  { href: "#contact",    label: "Contact"    },
 ];
 
-// ─── Magnetic wrapper — pulls element toward cursor ───────────────────────────
+// ─── Magnetic wrapper ─────────────────────────────────────────────────────────
 function MagneticWrap({
   children,
   strength = 0.28,
@@ -35,10 +35,7 @@ function MagneticWrap({
     x.set((e.clientX - r.left - r.width / 2) * strength);
     y.set((e.clientY - r.top - r.height / 2) * strength);
   };
-  const onLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
+  const onLeave = () => { x.set(0); y.set(0); };
 
   return (
     <motion.div ref={ref} style={{ x: sx, y: sy }} onMouseMove={onMove} onMouseLeave={onLeave}>
@@ -47,7 +44,7 @@ function MagneticWrap({
   );
 }
 
-// ─── Shimmer border — travels across when header is scrolled ─────────────────
+// ─── Shimmer border ───────────────────────────────────────────────────────────
 function ShimmerBorder({ visible }: { visible: boolean }) {
   return (
     <AnimatePresence>
@@ -67,12 +64,7 @@ function ShimmerBorder({ visible }: { visible: boolean }) {
               filter: "blur(1px)",
             }}
             animate={{ x: ["-100%", "500%"] }}
-            transition={{
-              duration: 3.5,
-              repeat: Infinity,
-              ease: "linear",
-              repeatDelay: 1.5,
-            }}
+            transition={{ duration: 3.5, repeat: Infinity, ease: "linear", repeatDelay: 1.5 }}
           />
         </motion.div>
       )}
@@ -80,12 +72,26 @@ function ShimmerBorder({ visible }: { visible: boolean }) {
   );
 }
 
+// ─── Navbar ───────────────────────────────────────────────────────────────────
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled]       = useState(false);
+  const [mobileOpen, setMobileOpen]   = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+
+  // Track actual header height so the mobile menu aligns perfectly
+  const headerRef = useRef<HTMLElement>(null);
+  const [headerH, setHeaderH] = useState(64);
+
+  useEffect(() => {
+    const measure = () => {
+      if (headerRef.current) setHeaderH(headerRef.current.offsetHeight);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [scrolled]);        // re-measure when scrolled state changes padding
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -93,13 +99,18 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Close mobile menu on resize to desktop
+  useEffect(() => {
+    const onResize = () => { if (window.innerWidth >= 768) setMobileOpen(false); };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   useEffect(() => {
     const sections = navLinks.map((l) => l.href.slice(1));
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActiveSection(e.target.id);
-        });
+        entries.forEach((e) => { if (e.isIntersecting) setActiveSection(e.target.id); });
       },
       { threshold: 0.3 }
     );
@@ -110,14 +121,23 @@ export default function Navbar() {
     return () => observer.disconnect();
   }, []);
 
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
+
   const handleNavClick = (href: string) => {
     setMobileOpen(false);
-    document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+    setTimeout(() => {
+      document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+    }, 50); // small delay lets the menu close animation start first
   };
 
   return (
     <>
       <motion.header
+        ref={headerRef}
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
@@ -131,7 +151,7 @@ export default function Navbar() {
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between">
 
-          {/* ── Logo ─────────────────────────────────────────────────────── */}
+          {/* ── Logo ─────────────────────────────────────────────────── */}
           <MagneticWrap strength={0.32}>
             <motion.button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -142,13 +162,10 @@ export default function Navbar() {
               <motion.div
                 className="relative w-9 h-9 rounded-xl flex items-center justify-center
                            overflow-hidden shadow-md"
-                style={{
-                  background: "linear-gradient(135deg, var(--accent), var(--gold))",
-                }}
+                style={{ background: "linear-gradient(135deg, var(--accent), var(--gold))" }}
                 whileHover={{ scale: 1.14, rotate: 6 }}
                 transition={{ type: "spring", stiffness: 420, damping: 18 }}
               >
-                {/* Rotating inner glow on hover */}
                 <motion.div
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   style={{
@@ -162,17 +179,18 @@ export default function Navbar() {
                   AM
                 </span>
               </motion.div>
+              {/* Name hidden on very small screens, visible from sm */}
               <span className="font-display text-[var(--text-primary)] font-semibold text-lg tracking-wide hidden sm:block" />
             </motion.button>
           </MagneticWrap>
 
-          {/* ── Desktop Nav ──────────────────────────────────────────────── */}
+          {/* ── Desktop Nav ──────────────────────────────────────────── */}
           <nav
             className="hidden md:flex items-center gap-1"
             onMouseLeave={() => setHoveredLink(null)}
           >
             {navLinks.map((link) => {
-              const isActive = activeSection === link.href.slice(1);
+              const isActive  = activeSection === link.href.slice(1);
               const isHovered = hoveredLink === link.href;
               return (
                 <button
@@ -186,7 +204,6 @@ export default function Navbar() {
                       : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                   }`}
                 >
-                  {/* Hover background blob */}
                   <AnimatePresence>
                     {isHovered && !isActive && (
                       <motion.span
@@ -199,7 +216,6 @@ export default function Navbar() {
                       />
                     )}
                   </AnimatePresence>
-                  {/* Shared active pill */}
                   {isActive && (
                     <motion.span
                       layoutId="nav-active"
@@ -213,8 +229,9 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* ── Right actions ────────────────────────────────────────────── */}
+          {/* ── Right actions ────────────────────────────────────────── */}
           <div className="flex items-center gap-2">
+            {/* Theme toggle */}
             <MagneticWrap>
               <motion.button
                 onClick={toggleTheme}
@@ -240,6 +257,7 @@ export default function Navbar() {
               </motion.button>
             </MagneticWrap>
 
+            {/* Hamburger — mobile only */}
             <MagneticWrap>
               <motion.button
                 onClick={() => setMobileOpen(!mobileOpen)}
@@ -249,7 +267,8 @@ export default function Navbar() {
                            border border-[var(--border)] bg-[var(--bg-card)]
                            text-[var(--text-secondary)] hover:text-[var(--accent)]
                            md:hidden transition-all duration-200"
-                aria-label="Toggle menu"
+                aria-label={mobileOpen ? "Close menu" : "Open menu"}
+                aria-expanded={mobileOpen}
               >
                 <AnimatePresence mode="wait">
                   <motion.span
@@ -268,44 +287,58 @@ export default function Navbar() {
         </div>
       </motion.header>
 
-      {/* ── Mobile Menu ───────────────────────────────────────────────────── */}
+      {/* ── Mobile Menu — position matches measured header height ──── */}
       <AnimatePresence>
         {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -18, filter: "blur(8px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            exit={{ opacity: 0, y: -18, filter: "blur(8px)" }}
-            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-x-0 top-[64px] z-40 bg-[var(--bg-primary)]/95
-                       backdrop-blur-xl border-b border-[var(--border)] md:hidden"
-          >
-            <nav className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex flex-col gap-1">
-              {navLinks.map((link, i) => (
-                <motion.button
-                  key={link.href}
-                  initial={{ opacity: 0, x: -22, filter: "blur(4px)" }}
-                  animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                  transition={{
-                    delay: i * 0.055,
-                    duration: 0.3,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  onClick={() => handleNavClick(link.href)}
-                  className={`text-left px-4 py-3 min-h-[44px] rounded-xl text-sm
-                              font-medium transition-all duration-200 ${
-                    activeSection === link.href.slice(1)
-                      ? "bg-[var(--accent-glow)] text-[var(--accent)]"
-                      : "text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)]"
-                  }`}
-                >
-                  {link.label}
-                </motion.button>
-              ))}
-            </nav>
-          </motion.div>
+          <>
+            {/* Full-screen dimming overlay */}
+            <motion.div
+              key="overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-30 bg-black/30 md:hidden"
+              onClick={() => setMobileOpen(false)}
+            />
+
+            {/* Dropdown panel */}
+            <motion.div
+              key="menu"
+              initial={{ opacity: 0, y: -12, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -12, filter: "blur(8px)" }}
+              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              /* Use measured header height instead of hard-coded 64px */
+              style={{ top: headerH }}
+              className="fixed inset-x-0 z-40 bg-[var(--bg-primary)]/95
+                         backdrop-blur-xl border-b border-[var(--border)] md:hidden
+                         max-h-[calc(100dvh-var(--header-h,64px))] overflow-y-auto"
+            >
+              <nav className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex flex-col gap-1
+                              pb-safe-area-inset-bottom">
+                {navLinks.map((link, i) => (
+                  <motion.button
+                    key={link.href}
+                    initial={{ opacity: 0, x: -22, filter: "blur(4px)" }}
+                    animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                    transition={{ delay: i * 0.055, duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                    onClick={() => handleNavClick(link.href)}
+                    className={`text-left px-4 py-3.5 min-h-[52px] rounded-xl text-sm
+                                font-medium transition-all duration-200 ${
+                      activeSection === link.href.slice(1)
+                        ? "bg-[var(--accent-glow)] text-[var(--accent)]"
+                        : "text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)]"
+                    }`}
+                  >
+                    {link.label}
+                  </motion.button>
+                ))}
+              </nav>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>
   );
 }
-
