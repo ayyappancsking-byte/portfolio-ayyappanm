@@ -410,7 +410,7 @@ export default function Hero() {
                   transition={{ delay: 0.3, duration: 0.6, ease: "easeOut" }}
                 />
                 <span className="text-ink-400 text-[10px] sm:text-xs font-mono tracking-[0.2em] uppercase">
-                  Portfolio
+                  Hi, I'm
                 </span>
               </motion.div>
 
