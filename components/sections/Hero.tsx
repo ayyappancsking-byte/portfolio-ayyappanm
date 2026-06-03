@@ -27,7 +27,7 @@ const hero = {
   linkedin: "https://www.linkedin.com/in/-ayyappanm",
   github: "https://github.com/ayyappancsking-byte",
   photo: "/profile.jpg",
-  resume: "/resume.pdf",
+  resume: "/AYYAPPAN_M_Resume.pdf",
 };
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
